@@ -11,6 +11,13 @@ from threading import Thread
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
+import logging
+
+logging.basicConfig(
+    filename='detector.log',
+    format='%(asctime)s %(message)s',
+    level=logging.INFO,
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 print("Para finalizar la ejecucion presione q")
 
@@ -79,9 +86,11 @@ def classfier(testImage, threadNum, capTime, frameCounter):
 
         if(testEntered((xA + xB) /2, (yA + yB) /2,prevPerson)):
             peopleIn += 1
+            logging.info('IN')
 
         if(testOut((xA + xB) /2, (yA + yB) /2,prevPerson)):
             peopleOut += 1
+            logging.info('OUT')
         
         prevPerson = rectangleCenterPont
 	
