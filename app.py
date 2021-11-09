@@ -1,7 +1,7 @@
 import os
 import sys
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 
 
 def create_app(test_config=None):
@@ -40,5 +40,9 @@ def create_app(test_config=None):
             data=actions,
             size=len(actions)
         )
+    
+    @app.route('/')
+    def dashboard():
+        return render_template('index.html')
 
     return app
