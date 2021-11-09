@@ -1,37 +1,24 @@
-const webpack = require('webpack');
-
 module.exports = {
-  lintOnSave: false,
-  configureWebpack: {
-    // Set up all the aliases we use in our app.
-    resolve: {
-      alias: {
-        'chart.js': 'chart.js/dist/Chart.js'
-      }
+    // options...
+    devServer: {
+        disableHostCheck: true
     },
-    plugins: [
-      new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 6
-      })
-    ]
-  },
-  pwa: {
-    name: 'Vue Black Dashboard',
-    themeColor: '#344675',
-    msTileColor: '#344675',
-    appleMobileWebAppCapable: 'yes',
-    appleMobileWebAppStatusBarStyle: '#344675'
-  },
-  pluginOptions: {
-    i18n: {
-      locale: 'en',
-      fallbackLocale: 'en',
-      localeDir: 'locales',
-      enableInSFC: false
+    configureWebpack: {
+        module: {
+            rules: [
+                // ... other rules omitted
+
+                // this will apply to both plain `.scss` files
+                // AND `<style lang="scss">` blocks in `.vue` files
+                {
+                    test: /\.scss$/,
+                    use: [
+                        'vue-style-loader',
+                        'css-loader',
+                        'sass-loader'
+                    ]
+                }
+            ]
+        },
     }
-  },
-  css: {
-    // Enable CSS source maps.
-    sourceMap: process.env.NODE_ENV !== 'production'
-  }
-};
+}
