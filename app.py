@@ -1,14 +1,15 @@
 import os
 import sys
 
-from flask import Flask, jsonify, render_template
-
+from flask import Flask, jsonify, render_template, send_from_directory
+from flask_cors import CORS, cross_origin
 
 def create_app(test_config=None):
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__, instance_relative_config=True, static_url_path='/static')
     app.config.from_mapping(
         SECRET_KEY='dev'
     )
+    cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -33,13 +34,18 @@ def create_app(test_config=None):
             actions.append( {
                 'date': data[0],
                 'time': data[1],
-                'action': data[2]
+                'action': data[2].replace("\n", "")
             } )
         
-        return jsonify(
-            data=actions,
+        response = jsonify(
+            actions=actions,
             size=len(actions)
         )
+        return response
+
+    @app.route('/<path:path>')
+    def send_js(path):
+        return send_from_directory('static', path)
     
     @app.route('/')
     def dashboard():

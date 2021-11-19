@@ -43,3 +43,49 @@ _En caso de necesitar implementar una camara web generica seguir esta [guia](htt
 ```bash
 python detector.py
 ```
+
+# Dashboard de datos
+
+Este contador cuenta con un dashboard que muestra en tiempo real las interacciones y estadisticas que el dispositivo ha recogido en el tiempo. Este dashboard fue desarrollado sobre flask por la parte del servidor y el cliente en Vue.Js
+
+## Requisitos
+
+* Python 3.8
+* Node 16
+
+## Instalar dependencias
+
+Instalar dependencias del servidor
+```bash
+pip install -U flask-cors
+pip install flask
+```
+
+Instalar dependencias de desarrollo del cliente
+```bash
+cd dashboard
+yarn install
+```
+
+## Ejecutar el dashboard
+_Es necesario tener un archivo de logs presente llamado detector.log_
+```bash
+flask run
+# Abrir una nueva terminal
+cd dashboard
+yarn serve
+```
+
+## Actualizar produccion
+```bash
+cd dashboard
+yarn generate
+cp -r dist/* ../static/
+cd ..
+cp static/index.html templates/
+```
+
+## Ejecutar en produccion
+```bash
+flask run
+```
