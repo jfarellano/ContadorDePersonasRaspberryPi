@@ -59,6 +59,8 @@ Instalar dependencias del servidor
 ```bash
 pip install -U flask-cors
 pip install flask
+pip install requests
+pip install python-dotenv
 ```
 
 Instalar dependencias de desarrollo del cliente

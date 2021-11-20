@@ -12,6 +12,11 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 import logging
+import requests
+from dotenv import dotenv_values
+from datetime import datetime
+
+envs = dotenv_values(".env")
 
 logging.basicConfig(
     filename='detector.log',
@@ -39,8 +44,8 @@ fourcc = cv2.cv.CV_FOURCC(*'XVID')
 out = cv2.VideoWriter(time.strftime("%H_%M_%S")+'.avi',fourcc, 20.0, (resX, resY))
 
 # Inicializar Detector de personas generico
-hog = cv2.HOGDescriptor()
-hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+hog = cv2.HOGDescriptor() # Depende de la version de cv2
+hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector()) # Depende de la version de cv2
 detectFlag = 0
 frameCounter = 0
 # Tiempo de inicializacion de la camara
@@ -49,6 +54,10 @@ time.sleep(0.1)
 GPIO.setmode(GPIO.BOARD)
 
 GPIO.setup(16, GPIO.OUT)
+
+def sendAPICall(action):
+    url = envs['URL']
+    requests.post(url, data={'date':datetime.now(), 'action': action})
 
 
 
@@ -87,10 +96,14 @@ def classfier(testImage, threadNum, capTime, frameCounter):
         if(testEntered((xA + xB) /2, (yA + yB) /2,prevPerson)):
             peopleIn += 1
             logging.info('IN')
+            t_in = Thread(target = sendAPICall, args = ("IN"))
+            t_in.start()
 
         if(testOut((xA + xB) /2, (yA + yB) /2,prevPerson)):
             peopleOut += 1
             logging.info('OUT')
+            t_out = Thread(target = sendAPICall, args = ("OUT"))
+            t_out.start()
         
         prevPerson = rectangleCenterPont
 	
